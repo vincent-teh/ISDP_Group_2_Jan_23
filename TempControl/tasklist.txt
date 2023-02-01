@@ -1,0 +1,3 @@
+Tasklist (Sha):
+Details circuit diagram of the control network
+algorithm for the temperature control

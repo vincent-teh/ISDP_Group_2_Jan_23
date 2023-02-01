@@ -1,0 +1,4 @@
+Task list (Najmi):
+Detail circuit diagram of the sensing network
+How thermocouple will communicate with arduino
+details of the calibration

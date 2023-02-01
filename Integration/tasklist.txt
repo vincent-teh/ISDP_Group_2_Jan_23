@@ -1,0 +1,4 @@
+Tasklist (Sheng):
+Connection architecture between slave device and host computer
+assembling all codes
+determine required output from each sub modules
