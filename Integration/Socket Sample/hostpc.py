@@ -3,7 +3,8 @@ import threading
 
 
 PORT = 5050
-SERVER = socket.gethostbyname(socket.gethostname())
+# SERVER = socket.gethostbyname(socket.gethostname())
+SERVER = "192.168.74.100"
 ADDR = (SERVER, PORT)
 FORMAT = 'utf-8'
 
