@@ -5,8 +5,8 @@
 
 const char* MY_SSID      = "YUSHENG";
 const char* MY_PASSWORD  = "z888}26E";
-// IPAddress SERVER_IP(192,168,137,1);
-const char* SERVER_IP =  "yusheng";
+IPAddress SERVER_IP(192,168,137,1);
+// const char* SERVER_IP =  "yusheng";
 const uint16_t PORT   = 5050;
 
 /* Attempted to declare inside the loop function. However,

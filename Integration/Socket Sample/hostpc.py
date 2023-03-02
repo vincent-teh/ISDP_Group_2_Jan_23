@@ -1,10 +1,11 @@
 import socket
 import threading
+from time import sleep
 
 
 PORT = 5050
 # SERVER = socket.gethostbyname(socket.gethostname())
-SERVER = "192.168.74.100"
+SERVER = "192.168.137.1"
 ADDR = (SERVER, PORT)
 FORMAT = 'utf-8'
 
@@ -14,9 +15,9 @@ host_pc.bind(ADDR)
 def handle_client(connection, address):
     print(f"[NEW CONNECTION] {address} connected")
     while True:
-        msg = connection.recv(64).decode(FORMAT)
-        if msg:
-            print(f"[{address}] {msg}")
+        msg = "Connected to server"
+        connection.send(msg.encode(FORMAT))
+        sleep(2)
 
 def start():
     host_pc.listen()
