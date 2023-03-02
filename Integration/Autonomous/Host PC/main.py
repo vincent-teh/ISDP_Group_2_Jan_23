@@ -29,20 +29,17 @@ class main_window(MyWindow):
     def clicked_respond(self, num, out_msg_queue):
             output_msg = str(num)
             out_msg_queue.put(output_msg)
-            print(num)
 
 def handle_client(connection, address, msg_queue):
     print(f"[NEW CONNECTION] {address} connected")
+    recv_thread = threading.Thread(target=RecvData, args=connection)
+    recv_thread.start()
+
+    # This original handle client thread will handle sending msg
     while True:
-        input_msg = connection.recv(64).decode(FORMAT)
-        if input_msg:
-            print(f"[{address}] {input_msg}")
-        print(msg_queue.empty())
-        if not msg_queue.empty():
-            output_msg = msg_queue.get()
-            print(output_msg)
-            connection.send(output_msg.encode(FORMAT))
-            print("Signal sent")
+        if not output_msg_queue.empty():
+            output_msg = output_msg_queue.get()
+            SendData(connection, output_msg)
 
 def start(output_msg_queue):
     host_pc.listen()
@@ -52,6 +49,14 @@ def start(output_msg_queue):
         thread.start()
         print(f"[ACTIVE CONNECTION] {threading.active_count() - 1}")
 
+def RecvData(connection):
+    while True:
+        input_msg = connection.recv(64).decode(FORMAT)
+        print(input_msg)
+
+def SendData(connection, msg_to_send):
+    connection.send(msg_to_send.encode(FORMAT))
+    print(f"[Singal sent] {msg_to_send}")
 
 if __name__ == "__main__":
     pyqt5_thread = threading.Thread(target=run_pyqt5, args=("Autonomous navigation", main_window, output_msg_queue))
