@@ -3,10 +3,6 @@ import socket
 import threading
 import queue
 
-APPLICATION_NAME = "PyQT Demo"
-
-is_debug = True
-
 
 PORT = 5050
 # SERVER = socket.gethostbyname(socket.gethostname())
@@ -32,7 +28,7 @@ class main_window(MyWindow):
 
 def handle_client(connection, address, msg_queue):
     print(f"[NEW CONNECTION] {address} connected")
-    recv_thread = threading.Thread(target=RecvData, args=connection)
+    recv_thread = threading.Thread(target=RecvData, args=(connection,))
     recv_thread.start()
 
     # This original handle client thread will handle sending msg
