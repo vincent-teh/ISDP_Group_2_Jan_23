@@ -1,5 +1,7 @@
 /**
  * Authhor: Teh Yu Sheng
+ * Date: 12/3/2023
+ * Objective: Motor class that handles 2 wheel dc drive
  * Desc: This file shows the code for 2 wheel drive DC motor.
  *       Kindly do motor.begin() in the setup portion of the 
  *       main file to initialise the class. When enable debug,
@@ -13,15 +15,15 @@
 
 #include <Arduino.h>
 
-#define FORWARD     0
-#define BACKWARD    1
-#define TURN_LEFT   2
-#define TURN_RIGHT  3
-#define STOP        4
-
 class Motor
 {
 public:
+  #define FORWARD     0
+  #define BACKWARD    1
+  #define TURN_LEFT   2
+  #define TURN_RIGHT  3
+  #define STOP        4
+
   Motor(uint8_t left_enable_pin, uint8_t left_pin_forward,
         uint8_t left_pin_backward, uint8_t right_pin_forward,
         uint8_t right_pin_backward, uint8_t right_enable_pin);
