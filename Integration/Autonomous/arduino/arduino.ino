@@ -37,32 +37,36 @@ void loop() {
 #endif
 
 /**
- * This section shows the code for reading encoders value 
+ * This section shows the code for reading encoders value
  */
 #ifdef ENCODER_EXAMPLE
 #define LEFT_CLK_PIN  2
-#define LEFT_DT_PIN   3
 #define RIGHT_CLK_PIN 4
-#define RIGHT_DT_PIN  5
 
-Encoder left(LEFT_CLK_PIN, LEFT_DT_PIN);
-Encoder right(RIGHT_CLK_PIN, RIGHT_DT_PIN);
+Encoder left(LEFT_CLK_PIN);
+Encoder right(RIGHT_CLK_PIN);
 
 void handleLeftInterrupt()
 {
   left.handleInterrupt();
+  Serial.println("Left interrupt received");
 }
 
 void handleRightInterrupt()
 {
   right.handleInterrupt();
+  Serial.println("Right interrupt received");
 }
 
 void setup()
 {
-  left.begin(handleLeftInterrupt);
-  right.begin(handleRightInterrupt);
   Serial.begin(9600);
+  left.begin(&handleLeftInterrupt);
+  Serial.println("this code is executed");
+  right.begin(&handleRightInterrupt);
+  Serial.println("this code is executed");
+  attachInterrupt(2, handleLeftInterrupt, CHANGE);
+  Serial.println("this code is executed");
 }
 
 void loop()
@@ -71,10 +75,6 @@ void loop()
   Serial.println(left.getVal());
   Serial.print("Right encoder: ");
   Serial.println(right.getVal());
-  delay(1000);
+  delay(2000);
 }
 #endif
-
-
-
-
