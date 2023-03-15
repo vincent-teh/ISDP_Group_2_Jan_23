@@ -49,24 +49,24 @@ public:
   /**
    * @brief The defaultHandler when interrupt happened.
    *        Please call this function in the ISR_Function.
-   * @example void ISR_Function() {encoder.handleInterrupt();}
+   * @example void ISR_Function() {encoder.updateCount();}
    */
-  void handleInterrupt();
+  void updateCount() {m_counter++;}; 
   /**
    * @brief Reset the number of rotation
    */
-  void resetCount();
+  void resetCount() {m_counter = 0;};
 
   /**
    * @brief Return the CLK pin register with the class
    * @return uint8_t m_CLK_pin
    */
-  uint8_t getCLKPin();
+  uint8_t getCLKPin() {return m_CLK_pin;};
   /**
    * @brief Get the number of rotation
    * @return int32_t m_counter
    */
-  int32_t getVal();
+  int32_t getVal() {return m_counter;};
 
 private:
   volatile int32_t m_counter       = 0;

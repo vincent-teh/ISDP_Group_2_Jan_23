@@ -48,13 +48,13 @@ Encoder right(RIGHT_CLK_PIN);
 
 void handleLeftInterrupt()
 {
-  left.handleInterrupt();
+  left.updateCount();
   Serial.println("Left interrupt received");
 }
 
 void handleRightInterrupt()
 {
-  right.handleInterrupt();
+  right.updateCount();
   Serial.println("Right interrupt received");
 }
 
