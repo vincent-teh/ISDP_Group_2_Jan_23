@@ -1,28 +1,17 @@
-import cv2
+# Pending create a proper way of stopping the connection.
+# Pending create one button to stop all threads
 
-# Set the IP camera URL
-url = "http://192.168.137.35:8000/stream.mjpg"
+from cv_stream import Streamer
+from Socket import MySocket
 
-# Open the video stream
-cap = cv2.VideoCapture(url)
 
-# Loop through the frames from the video stream
-while True:
-    # Read a frame from the video stream
-    ret, frame = cap.read()
+PORT = 5050
+# SERVER = socket.gethostbyname(socket.gethostname())
+SERVER = "192.168.137.1"
+ADDR = (SERVER, PORT)
+FORMAT = 'utf-8'
+URL = "http://192.168.137.190:8080/stream/video.mjpeg"
 
-    # Check if the frame was successfully captured
-    if not ret:
-        print("Error: Failed to capture frame")
-        break
-
-    # Display the frame
-    cv2.imshow("IP Camera Stream", frame)
-
-    # Exit if the 'q' key is pressed
-    if cv2.waitKey(1) == ord('q'):
-        break
-
-# Release the video stream and close all windows
-cap.release()
-cv2.destroyAllWindows()
+server = MySocket(ADDR, URL)
+streamer = Streamer()
+server.start(streamer)
