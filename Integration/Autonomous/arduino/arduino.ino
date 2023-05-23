@@ -1,11 +1,25 @@
-#include "encoder.h"
+/**
+ * Authhor: Teh Yu Sheng
+ * Date: 23/5/2023
+ * Objective: Main function for running a Arduino Powered Robot Car.
+ * Desc: The main function pulls 2 library which is motor class and ultrasonic
+ *       class. The main function will read input through serial communication
+ *       (USB).
+ *       Case FORWARD: The car will constantly moves until the distance less
+ *                     than 20cm through ultrasonic sensor.
+ *       Case LEFT & RIGHT: The car will perform turning through differential
+ *                          drive principle. Adjust the turn_time parameters
+ *                          for accurate angle.
+ */
+
 #include "motor.h"
+#include "ultrasonic.h"
+
+#define INVERTED
 
 #define BAUD_RATE 9600
 
-/** This section shows the code for running basic motor
- *  receiving inputs from USB serial
- */
+// Motor Driver's Pins
 #define EN_A          5
 #define LEFT_FORW     6
 #define LEFT_BACKW    7
@@ -13,99 +27,54 @@
 #define RIGHT_BACKW   8
 #define EN_B          10
 
-#define ECDR_LEFT   3
-#define ECDR_RIGHT  2
+// Ultrasonic Sensor's Pin
+#define TRIG_PIN 13
+#define ECHO_PIN 12
 
-#define TURN_SPEED 150
+#define LEFT_TURN_TIME  500 //ms
+#define RIGHT_TURN_TIME 500 //ms
 
-/**
- * steps per revolve 37
- * Wheel diameter    6
- * Distance travel for 1 revolve 18.86
- */
-#define STEPS_IN_90_DEGREES 21
+#define SPEED 255
 
-#ifdef MAIN
-Motor my_car(EN_A, LEFT_FORW, LEFT_BACKW,
-            RIGHT_FORW, RIGHT_BACKW, EN_B);
-
-Encoder encoders[2] = {Encoder(ECDR_LEFT), Encoder(ECDR_RIGHT)};
-
-unsigned long start_time;
-
-void ISR_handler_left()
-{
-  encoders[0].updateCount();
-}
-
-void ISR_handler_right()
-{
-  encoders[1].updateCount();
-}
-
-void setup() {
-  Serial.begin(BAUD_RATE);
-  my_car.begin();
-  my_car.setDirection(0);
-  my_car.setSpeed(0, 0);
-  encoders[0].begin(ISR_handler_left);
-  encoders[1].begin(ISR_handler_left);
-}
-
-void loop() {
-  if (Serial.available()) {
-    int angle = Serial.parseInt();
-    int steps = map(abs(angle), 0, 90, 0, STEPS_IN_90_DEGREES);
-    if (angle < 0)
-      my_car.setDirection(TURN_LEFT);
-    else
-      my_car.setDirection(TURN_RIGHT);
-    uint8_t speeds[] = {TURN_SPEED, TURN_SPEED};
-    my_car.setSpeed(speeds[0], speeds[1]);
-    while (true) {
-      if (encoders[0].getVal() == steps) {
-        speeds[0] = 0;
-        my_car.setSpeed(speeds[0], speeds[1]);
-      }
-      if (encoders[1].getVal() == steps) {
-        speeds[1] = 0;
-        my_car.setSpeed(speeds[0], speeds[1]);
-      }
-    }
-    encoders[0].resetCount();
-    encoders[1].resetCount();
-  }
-}
-#endif
-
-#define SPEED 200
 Motor my_car(EN_A, LEFT_FORW, LEFT_BACKW, RIGHT_FORW, RIGHT_BACKW, EN_B);
+UltrasonicSensor my_ult_sensor(TRIG_PIN, ECHO_PIN);
 
 void setup()
 {
   my_car.begin();
   Serial.begin(9600);
+  my_ult_sensor.begin();
 }
 
 void loop()
 {
   if (Serial.available()) {
     int data = Serial.readString().toInt();
+    int distance = 100;
     Serial.println(data);
-    for (int i = 0; i < 15; i++) {
-      if (data == TURN_LEFT) {
+    switch (data) {
+      case (FORWARD):
+        my_car.setDirection(FORWARD);
         my_car.setSpeed(SPEED, SPEED);
+        while (distance > 20) {
+          delay(50);
+          distance = my_ult_sensor.get_distance_cm();
+          Serial.println(distance);
+        }
+        break;
+      case (TURN_LEFT):
         my_car.setDirection(TURN_LEFT);
-      }
-      else {
         my_car.setSpeed(SPEED, SPEED);
+        delay(LEFT_TURN_TIME);
+        break;
+      case (TURN_RIGHT):
         my_car.setDirection(TURN_RIGHT);
-      }
-      delay(100);
-      my_car.setSpeed(0, 0);
-      delay(500);
+        my_car.setSpeed(SPEED, SPEED);
+        delay(RIGHT_TURN_TIME);
+        break;
     }
+    my_car.setDirection(STOP);
   }
-  my_car.setSpeed(0, 0);
 }
+
 
