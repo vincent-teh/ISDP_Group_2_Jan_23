@@ -15,7 +15,6 @@
 #include "motor.h"
 #include "ultrasonic.h"
 
-#define INVERTED
 
 #define BAUD_RATE 9600
 
